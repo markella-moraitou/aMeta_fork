@@ -1,3 +1,0 @@
-sample	condition	fastq
-A	untreated	data/A.fastq.gz
-B	treated	data/B.fastq.gz
