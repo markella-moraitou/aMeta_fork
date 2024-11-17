@@ -1,3 +1,5 @@
+localrules: Create_Sample_TaxID_Directories, aggregate, Make_Node_List, Samtools_Faidx, Breadth_Of_Coverage, Read_Length_Distribution, PMD_scores, Authentication_Plots, Deamination, Authentication_Score
+
 checkpoint Create_Sample_TaxID_Directories:
     """Create taxid directory
 
