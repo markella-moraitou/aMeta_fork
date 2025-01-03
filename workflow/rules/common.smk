@@ -30,7 +30,7 @@ def cd(path, logger):
 
 ##### load config and sample sheets #####
 configfile: "config/config.yaml"
-
+print(config)
 
 if workflow.use_env_modules:
     envmodules = os.getenv("ANCIENT_MICROBIOME_ENVMODULES", "config/envmodules.yaml")
