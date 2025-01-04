@@ -1,3 +1,5 @@
+localrules: Filter_KrakenUniq_Output, KrakenUniq2Krona, KrakenUniq_AbundanceMatrix
+
 rule KrakenUniq:
     """Run KrakenUniq on trimmed fastq data"""
     output:
