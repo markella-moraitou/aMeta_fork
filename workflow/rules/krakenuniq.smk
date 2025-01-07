@@ -49,9 +49,20 @@ rule Filter_KrakenUniq_Output:
     message:
         "Filter_KrakenUniq_Output: APPLYING DEPTH AND BREADTH OF COVERAGE FILTERS TO KRAKENUNIQ OUTPUT FOR SAMPLE {input}"
     shell:
-        """{params.exe} {input.krakenuniq} {params.n_unique_kmers} {params.n_tax_reads} {input.pathogenomesFound} &> {log}; """
-        """cut -f7 {output.pathogens} | tail -n +2 > {output.pathogen_tax_id};"""
-        """cut -f7 {output.filtered} | tail -n +2 > {output.species_tax_id}"""
+        """
+        {params.exe} {input.krakenuniq} {params.n_unique_kmers} {params.n_tax_reads} {input.pathogenomesFound} &> {log} || true;
+        cut -f7 {output.pathogens} | tail -n +2 > {output.pathogen_tax_id} || true;
+        cut -f7 {output.filtered} | tail -n +2 > {output.species_tax_id} || true;
+        # Create missing output files if they do not exist
+        for file in {output}; do
+            if [ ! -f $file ]; then
+                echo "Warning: Output file $file not created. Creating an empty file." >&2
+                touch $file
+                # Add header
+                echo "%       reads   taxReads        kmers   dup     cov     taxID   rank    taxName" > {output.filtered}
+            fi
+        done
+        """
 
 
 rule KrakenUniq2Krona:
@@ -78,9 +89,18 @@ rule KrakenUniq2Krona:
     message:
         "KrakenUniq2Krona: VISUALIZING KRAKENUNIQ RESULTS WITH KRONA FOR SAMPLE {input.report}"
     shell:
-        "{params.exe} {input.report} {input.seqs} &> {log}; "
-        "cat {output.seqs} | cut -f 2,3 > {output.krona}; "
-        "ktImportTaxonomy {output.krona} -o {output.html} {params.DB} &>> {log}"
+        """
+        {params.exe} {input.report} {input.seqs} &> {log} || true;
+        cat {output.seqs} | cut -f 2,3 > {output.krona} || true;
+        ktImportTaxonomy {output.krona} -o {output.html} {params.DB} &>> {log} || true;
+        # Create missing output files if they do not exist
+        for file in {output}; do
+            if [ ! -f $file ]; then
+                echo "Warning: Output file $file not created. Creating an empty file." >&2
+                touch $file
+            fi
+        done
+        """
 
 
 rule KrakenUniq_AbundanceMatrix:
