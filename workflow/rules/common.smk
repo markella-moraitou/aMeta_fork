@@ -145,6 +145,8 @@ def malt_input(wildcards):
     )
 
 def summary_input(wildcards):
+    if not config["analyses"]["authentication"]:
+        return []
     return "results/overview_heatmap_scores.pdf"
 
 def krona_input(wildcards):
