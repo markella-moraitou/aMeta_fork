@@ -26,5 +26,8 @@ include: "rules/krakenuniq.smk"
 include: "rules/align.smk"
 include: "rules/damage.smk"
 include: "rules/malt.smk"
-include: "rules/authentic.smk"
-include: "rules/summary.smk"
+
+# Conditionally include authentication rules
+if config["analyses"]["authentication"]:
+    include: "rules/authentic.smk"
+    include: "rules/summary.smk"
