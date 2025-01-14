@@ -47,7 +47,15 @@ rule Malt:
     message:
         "Malt: RUNNING MALT ALIGNMENTS FOR SAMPLE {input.fastq}"
     shell:
-        "unset DISPLAY; malt-run -at SemiGlobal -m BlastN -i {input.fastq} -o {output.rma6} -a {params.gunzipped_sam} -t {threads} -d {input.db} -sup 1 -mq 100 -top 1 -mpi 85.0 -id 85.0 -v &> {log}"
+        """
+        if [ $(wc -l < {input.fastq}) -eq 0 ]; then
+            touch {output.rma6}
+            touch {output.sam}
+        else
+            unset DISPLAY
+            malt-run -at SemiGlobal -m BlastN -i {input.fastq} -o {output.rma6} -a {params.gunzipped_sam} -t {threads} -d {input.db} -sup 1 -mq 100 -top 1 -mpi 85.0 -id 85.0 -v
+        fi &> {log}
+        """
 
 
 rule Malt_QuantifyAbundance:
